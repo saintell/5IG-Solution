@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <title>Roomies Finance</title>
+</head>
+<body>
+    <h1>Roomies Finance</h1>
+    <h2>Add a Debt</h2>
+    <form action="/add_debt" method="post">
+        <input type="text" name="person" placeholder="Person (Josue or Daniela)" required>
+        <input type="text" name="amount" placeholder="Amount" required>
+        <input type="text" name="description" placeholder="Description" required>
+        <button type="submit">Add Debt</button>
+    </form>
+
+    <h2>Debts Table</h2>
+    <table>
+        <tr>
+            <th>Person</th>
+            <th>Debt Amount</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>Josue</td>
+            <td>{{ josue_debt }}</td>
+            <td>{{ josue_description }}</td>
+        </tr>
+        <tr>
+            <td>Daniela</td>
+            <td>{{ daniela_debt }}</td>
+            <td>{{ daniela_description }}</td>
+        </tr>
+    </table>
+    <h2>Search Debts by Description</h2>
+    <form action="/search_debt" method="get">
+        <input type="text" name="query" placeholder="Search by Description" required>
+        <button type="submit">Search</button>
+    </form>
+
+
+    <h2>Debt Status</h2>
+    <p>{{ debt_status }}</p>
+
+    <h2>Pay All Debts</h2>
+    <form action="/pay_all_debts" method="post">
+        <button type="submit">Pay all debts</button>
+    </form>
+
+
+    <h2>Debts List</h2>
+    <ul>
+        {% for debt in debt_list %}
+        <li>
+            <strong>Person:</strong> {{ debt.person }},
+            <strong>Amount:</strong> ${{ debt.amount }},
+            <strong>Description:</strong> {{ debt.description }}
+            <button class="edit-button" data-debt-id="{{ loop.index }}">Edit</button>
+            
+            <form method="post" action="/edit_debt" id="edit-form-{{ loop.index }}" style="display: none;">
+                <input type="hidden" name="debt_id" value="{{ loop.index }}">
+                <input type="text" name="new_amount" placeholder="New Amount" required>
+                <input type="text" name="new_description" placeholder="New Description" required>
+                <button type="submit">Save</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    
+    <script>
+    $(document).ready(function() {
+        $(".edit-button").click(function() {
+            var debtId = $(this).data("debt-id");
+            $("#edit-form-" + debtId).toggle();
+        });
+    });
+    </script>
+    
+    
+
+</body>
+</html>
